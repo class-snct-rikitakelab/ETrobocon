@@ -36,6 +36,17 @@ public class EV3waySample {
     private static final int   REMOTE_COMMAND_START = 71;   // 'g'
     private static final int   REMOTE_COMMAND_STOP  = 83;   // 's'
     private static final float THRESHOLD = (LIGHT_WHITE+LIGHT_BLACK)/2.0F;	// line threshold of trace
+    private static final int		CNTLIMIT = 95000000;
+    private static final float	KU = 350;		//
+    private static final float 	PU = 0.4f;		//
+    private static final float 	KP = KU  * 0.6f;		//
+    private static final float 	TI = PU  * 0.5f;		//
+    private static final float 	TD = PU  * 0.125f;		//
+    private static final float 	KI = KP / TI;		//
+    private static final float 	KD = KP * TD;		//
+    
+
+
 
     private static ServerSocket    server = null;
     private static Socket          client = null;
@@ -48,6 +59,9 @@ public class EV3waySample {
     private static boolean         alert   = false; //Detect some range before found obstacles
 	private static boolean         aware   = false; //Detect an obstacles
 	private static int             graycounter = 0; //Count gray color point
+	private static int			sensorcounter = 0;
+	private static float			diff[];
+	private static float			integral = 0;
 
 
     /**
@@ -84,6 +98,8 @@ public class EV3waySample {
         body.motorPortT.resetTachoCount();   // tail motor encoder reset
         Balancer.init();            // inverted pendulum control initialization
         graycounter = 0;
+        diff = new float[2];
+        diff[0] = 0;diff[1] = 0;
 
         // Remote connection
         Timer rcTimer = new Timer();
@@ -142,40 +158,78 @@ public class EV3waySample {
                         counter = 0;
                     }
 
-                    if(checkGrayzone(body)==true){ //Check for gray color point
-                    	graycounter++;
+                    if(checkNotBlackzone(body)==true){ //Check for gray color point
+                    	if(checkGrayzone(body)==true){
+                    		if(sensorcounter%2 == 0)
+                    			graycounter++;
+                    	}
                     }else{
-                    	graycounter=0;
+                    	if(sensorcounter%2==0)
+                    		graycounter=0;
+                    	//if(graycounter<0)graycounter=0;
                     }
+
+                    sensorcounter++;
 
                     float forward =  0.0F; // forward-reverse instruction
                     float turn    =  0.0F; // turning instruction
-
-                    if (graycounter>350) {           // Slow After found too much gray point
-                    	forward = -10.0F;  // forward instruction
-                        if (body.getBrightness() > THRESHOLD) {
-                            turn = 0F;  // right turn instruction
-                        } else {
-                            turn = 0F; // left turn instruction
+                    float p, i, d;
+                    
+                    if (graycounter>CNTLIMIT) {           // Slow After found too much gray point
+                    	if(checkGrayzone(body)==true){
+                    	forward = -25.0F;  // forward instruction
+                        turn = 0.0F;
+                    	//graycounter+=2;
                         }
                     }
 
                     else {
-                    	forward = 50.0F;  // forward instruction
+                    	forward = 80.0F;  // forward instruction
+                    	/*
                     	if (body.getBrightness() > THRESHOLD) {
                     		turn = 50.0F;  // right turn instruction
                     	} else {
                     		turn = -50.0F; // left turn instruction
                     	}
+                    	*/
+                    	//2.5Hz	0.4秒
+                    	diff[0] = diff[1];
+                    	diff[1] = body.getBrightness() - THRESHOLD;
+                    	integral += (diff[1] + diff[0]) / 2.0 * 0.004f;
+                    	
+                    	p = KP * diff[1];
+                    	i = KI * integral;
+                    	d = KD * (diff[1] - diff[0]) / 0.004f;
+                    	
+                    	turn = p + i + d;
+                    	
+                    	if(turn > 50.0F){
+                    		turn = 50.0F;
+                    	}
+                    	else if(turn < -50.0F){
+                    		turn = -50.0F;
+                    	}
+
                     }
+
 
                     float gyroNow = body.getGyroValue();              // gyro sensor value
                     int thetaL = body.motorPortL.getTachoCount();     //  left motor rotation angle
                     int thetaR = body.motorPortR.getTachoCount();     // right motor rotation angle
                     int battery = Battery.getVoltageMilliVolt();      //  battery voltage [mV]
-                    Balancer.control (forward, turn, gyroNow, GYRO_OFFSET, thetaL, thetaR, battery); // inverted pendulum control
-                    body.motorPortL.controlMotor(Balancer.getPwmL(), 1); // left motor PWM output set
-                    body.motorPortR.controlMotor(Balancer.getPwmR(), 1); // right motor PWM output set
+                    if(body.touchSensorIsPressed()){
+                        body.motorPortL.resetTachoCount();   // left motor encoder reset
+                        body.motorPortR.resetTachoCount();   // right motor encoder reset
+                        Balancer.init();            // inverted pendulum control initialization
+                        Balancer.control (0, 0, gyroNow, GYRO_OFFSET, thetaL, thetaR, battery); // inverted pendulum control
+                    	body.motorPortL.controlMotor(0, 1); // left motor PWM output set
+                    	body.motorPortR.controlMotor(0, 1); // right motor PWM output set
+                    }
+                    else{
+                    	Balancer.control (forward, turn, gyroNow, GYRO_OFFSET, thetaL, thetaR, battery); // inverted pendulum control
+                    	body.motorPortL.controlMotor(Balancer.getPwmL(), 1); // left motor PWM output set
+                    	body.motorPortR.controlMotor(Balancer.getPwmR(), 1); // right motor PWM output set
+                    }
                 }
             };
         driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
@@ -183,24 +237,45 @@ public class EV3waySample {
         for (;;) {
 
 
-        	if (graycounter>475) {
+        	if (graycounter>CNTLIMIT) {
                 rcTimer.cancel();
                 driveTimer.cancel();
                 // disconnect with run loop
 
-                while(true){
+                Delay.msDelay(300);
+
+                for(int k = 0;k<200;++k){
                 	tailControl(body, 82); //complete stop for tail control
 
                 	body.motorPortL.controlMotor(0,1); //left motor PWM output set
                 	body.motorPortR.controlMotor(0,1); //right motor PWM output set
 
                 	graycounter=0; //reset gray color point counter
+
+                	Delay.msDelay(10);
+                }
+
+                for(int k = 0;k<300;++k){
+                	tailControl(body, 82); //complete stop for tail control
+                	//Balancer.control (10.0f, 0.0f, body.getGyroValue(), GYRO_OFFSET, body.motorPortL.getTachoCount(), body.motorPortR.getTachoCount(), Battery.getVoltageMilliVolt()); // inverted pendulum control
+                	//body.motorPortL.controlMotor(Balancer.getPwmL(), 1); // left motor PWM output set
+                	//body.motorPortR.controlMotor(Balancer.getPwmR(), 1); // right motor PWM output set
+                	body.motorPortL.controlMotor(30,1); //left motor PWM output set
+                	body.motorPortR.controlMotor(30,1); //right motor PWM output set
+
+                	Delay.msDelay(10);
+                }
+                while(true){
+                	tailControl(body, 82); //complete stop for tail control;
+                	body.motorPortL.controlMotor(0,1); //left motor PWM output set
+                	body.motorPortR.controlMotor(0,1); //right motor PWM output set
                 }
 
         	}
 
         	Delay.msDelay(20);
 
+            /*
             if (body.touchSensorIsPressed() // running end Once the touch sensor is pressed
                 || checkRemoteCommand(REMOTE_COMMAND_STOP)) { // running end Once the 's' key is pressed in the PC
                 rcTimer.cancel();
@@ -208,6 +283,7 @@ public class EV3waySample {
                 break;
             }
             Delay.msDelay(20);
+            */
         }
 
     }
@@ -229,6 +305,14 @@ public class EV3waySample {
      * @return true(not black color) / false (black color))
      */
     private static final boolean checkGrayzone(EV3Body body){
+    	float value = body.getBrightness();
+    	if(value >= 0.06 && value<=0.14){
+    		return true;
+    	}else{
+    		return false;
+    	}
+    }
+    private static final boolean checkNotBlackzone(EV3Body body){
     	float value = body.getBrightness();
     	if(value > 0.05){
     		return true;
