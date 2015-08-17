@@ -1,12 +1,12 @@
 public class RequestChecker{
 	private static final int SOCKET_PORT = 7360;
-	private static final int REMOTE_COMMAND_LOG = 76; //"L"ƒL[
+	private static final int REMOTE_COMMAND_LOG = 76; //"L"ï¿½Lï¿½[
 
 	private static ServerSocket    server = null;
 	private static Socket          client = null;
 	private static InputStream     inputStream = null;
 	private static int             remoteCommand = 0;
-	
+
 	public static void checkRequest(void){
 		Timer logTimer = new Timer();
 		TimerTask logTask = new TimerTask() {
@@ -18,11 +18,11 @@ public class RequestChecker{
 						client = server.accept();
 						inputStream = client.getInputStream();
 						dataInputStream = new DataInputStream(inputStream);
-		                        } catch (IOException ex) {
+						} catch (IOException ex) {
 						ex.printStackTrace();
 						server = null;
 						dataInputStream = null;
-		                        }
+						}
 				} else {
 					try {
 						if (dataInputStream.available() > 0) {
