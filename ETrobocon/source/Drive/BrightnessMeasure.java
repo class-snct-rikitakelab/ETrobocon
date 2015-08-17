@@ -4,7 +4,13 @@ package Drive;
 
 public class BrightnessMeasure {
 
+	private EV3Body body;
+
+	BrightnessMeasure(){
+		body = new EV3Body();
+	}
+
 	public float getBrightness() {
-		return 0;
+		return body.getBrightness();
 	}
 }

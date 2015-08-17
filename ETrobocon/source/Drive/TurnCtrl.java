@@ -10,13 +10,19 @@ public class TurnCtrl {
 
 	private PCtrl pCtrl;
 
+	TurnCtrl(){
+		turnOperater = new TurnOperater();
+		brightness = new Brightness();
+		pCtrl = new PCtrl();
+	}
+
 
 	//モータを制御する
 	public void MotorCtrl() {
 		float bright = brightness.getBrightness();
 		float turn = pCtrl.calcBrightnessCtrl(bright);
 		turnOperater.setOperate(turn);
-		turnOperater.operate();
+		turnOperater.MotorCtrl();
 
 	}
 
