@@ -1,18 +1,21 @@
+package Drive;
 
 public class tailOperater {
 
-	EV3Body body;
+	private EV3Body body;
 
-	float operater;
+	private float pwm;
 
-	public void setOperater(float op){
-		operater = op;
+	public void setPWM(float op){
+		this.pwm = op;
 	}
 
-	public void motorCtrl(){
-
-
+	public float getPWM(){
+		return this.pwm;
 	}
 
+	public void MotorCtrl(){
+		body.motorPortT.controlMotor((int) pwm, 1);
+	}
 
 }

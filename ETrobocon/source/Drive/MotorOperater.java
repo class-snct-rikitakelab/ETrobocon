@@ -1,6 +1,9 @@
 package Drive;
 
-import Balancer;
+import lejos.hardware.Battery;
+import lejos.hardware.port.BasicMotorPort;
+import lejos.utility.Delay;
+import Drive.Balancer;
 
 public class MotorOperater{
 
@@ -32,7 +35,7 @@ public class MotorOperater{
 		this.pwm = pwm;
 	}
 
-	public Drive(){
+	public void Drive(){
 		float gyroNow = body.getGyroValue();
 		int thetaL = body.motorPortL.getTachoCount();
 		int thetaR = body.motorPortR.getTachoCount();
@@ -42,11 +45,11 @@ public class MotorOperater{
 		body.motorPortR.controlMotor(Balancer.getPwmR(), 1);
 	}
 
-	public operateTail(){
+	public void operateTail(){
 		body.motorPortT.controlMotor((int)this.pwm,1);
 	}
 
-	public init(){
+	public void init(){
 		body.gyro.reset();
         body.sonar.enable();
         body.motorPortL.setPWMMode(BasicMotorPort.PWM_BRAKE);

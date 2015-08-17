@@ -1,4 +1,4 @@
-package Driving;
+package Drive;
 
 public class ForwardCommander {
 
@@ -6,10 +6,10 @@ public class ForwardCommander {
 	static float STOP_FOR = -10.0F;
 	static float WAIN_FOR = 0.0F;
 
-	ForwardController fc;
+	ForwardCtrl fc;
 
 	ForwardCommander(){
-		fc  = new ForwardController();
+		fc  = new ForwardCtrl();
 	}
 
 	public void driveNormal(){

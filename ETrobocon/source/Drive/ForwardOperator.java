@@ -1,9 +1,13 @@
-package Driving;
+package Drive;
 
 public class ForwardOperator {
 
-	WheelMotorCtrl wmctrl;
+	public MotorOperater wmctrl;
 	private float working;
+
+	public ForwardOperator(){
+		wmctrl = new MotorOperater();
+	}
 
 	public void setOperate(float forward){
 		this.working = forward;
