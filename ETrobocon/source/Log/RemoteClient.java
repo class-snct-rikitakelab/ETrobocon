@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import lejos.utility.Delay;
+
 /**
  *
  */
@@ -135,22 +137,24 @@ public class RemoteClient extends Frame implements KeyListener {
 		sendCommand(e.getKeyCode());
 		System.out.println("Pressed " + e.getKeyCode());
 		if(e.getKeyCode() == KeyEvent.VK_L){
-			try {
-				socket = new Socket(txtIPAddress.getText(), PORT);
-				// outStream = new DataOutputStream(socket.getOutputStream());
-				inputStream = new DataInputStream(socket.getInputStream());
-				messages.setText("status: RACEIVE LOG");
-				btnConnect.setLabel("Disconnect");
-				receiveLog();
-			} catch (Exception exc) {
-				messages.setText("status: FAILURE Error establishing connection with EV3.");
-				System.out.println("Error" + exc);
-			}
+			receiveLog();
 		}
 	}
 
 
 	public void receiveLog(){
+
+		Delay.msDelay(100);//log側が20ごとにコマンド入力の確認しているのでそれより大きく
+		try {
+			socket = new Socket(txtIPAddress.getText(), PORT);
+			// outStream = new DataOutputStream(socket.getOutputStream());
+			inputStream = new DataInputStream(socket.getInputStream());
+			messages.setText("status: RACEIVE LOG");
+			btnConnect.setLabel("Disconnect");
+		} catch (Exception exc) {
+			messages.setText("status: FAILURE Error establishing connection with EV3.");
+			System.out.println("Error" + exc);
+		}
 		String str;
 		File file = new File("log.txt");
 		PrintWriter pw;
@@ -162,7 +166,7 @@ public class RemoteClient extends Frame implements KeyListener {
 			return;
 		}
 
-		try{
+		try{//読み込めるだけ読み込んでエラーで抜ける
 			for(;;){
 				str = inputStream.readUTF();
 				pw.println(str);
@@ -170,11 +174,12 @@ public class RemoteClient extends Frame implements KeyListener {
 		}
 		catch (IOException e){
 			e.printStackTrace();
+			messages.setText("status: RACEIVE END");
 		}
 		pw.close();
 	}
 
-	
+
 	public void keyReleased(KeyEvent e) {}
 	public void keyTyped(KeyEvent arg0) {}
 
