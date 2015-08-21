@@ -4,7 +4,7 @@
  *  Author: INACHI Minoru
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
  */
-package Driving;
+package Drive;
 
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
@@ -19,60 +19,68 @@ import lejos.robotics.SampleProvider;
 /**
  * EV3のモータとセンサを扱うクラス。
  */
-final class EV3Body {
+public final class EV3Body {
+
+	private static boolean setflag = false;
+
     // モータ制御用オブジェクト
     // EV3LargeRegulatedMotor では PWM 制御ができないので、TachoMotorPort を利用する
-    public TachoMotorPort motorPortL; // 左モータ
-    public TachoMotorPort motorPortR; // 右モータ
-    public TachoMotorPort motorPortT; // 尻尾モータ
+    public static TachoMotorPort motorPortL; // 左モータ
+    public static TachoMotorPort motorPortR; // 右モータ
+    public static TachoMotorPort motorPortT; // 尻尾モータ
 
     // タッチセンサ
-    public EV3TouchSensor touch;
-    public SensorMode touchMode;
-    public float[] sampleTouch;
+    public static EV3TouchSensor touch;
+    public static SensorMode touchMode;
+    public static float[] sampleTouch;
 
     // 超音波センサ
-    public EV3UltrasonicSensor sonar;
-    public SampleProvider distanceMode;  // 距離検出モード
-    public float[] sampleDistance;
+    public static EV3UltrasonicSensor sonar;
+    public static SampleProvider distanceMode;  // 距離検出モード
+    public static float[] sampleDistance;
 
     // カラーセンサ
-    public EV3ColorSensor colorSensor;
-    public SensorMode redMode;           // 輝度検出モード
-    public float[] sampleLight;
+    public static EV3ColorSensor colorSensor;
+    public static  SensorMode redMode;           // 輝度検出モード
+    public static float[] sampleLight;
 
     // ジャイロセンサ
-    public EV3GyroSensor gyro;
-    public SampleProvider rate;          // 角速度検出モード
-    public float[] sampleGyro;
+    public static EV3GyroSensor gyro;
+    public static SampleProvider rate;          // 角速度検出モード
+    public static float[] sampleGyro;
 
     /**
      * コンストラクタ。
      */
     public EV3Body() {
-        motorPortL = MotorPort.C.open(TachoMotorPort.class); // 左モータ
-        motorPortR = MotorPort.B.open(TachoMotorPort.class); // 右モータ
-        motorPortT = MotorPort.A.open(TachoMotorPort.class); // 尻尾モータ
+    	if(setflag == false){
+    		setflag = true;
 
-        // タッチセンサ
-        touch = new EV3TouchSensor(SensorPort.S1);
-        touchMode = touch.getTouchMode();
-        sampleTouch = new float[touchMode.sampleSize()];
+    		 motorPortL = MotorPort.C.open(TachoMotorPort.class); // 左モータ
+    	        motorPortR = MotorPort.B.open(TachoMotorPort.class); // 右モータ
+    	        motorPortT = MotorPort.A.open(TachoMotorPort.class); // 尻尾モータ
 
-        // 超音波センサ
-        sonar = new EV3UltrasonicSensor(SensorPort.S2);
-        distanceMode = sonar.getDistanceMode(); // 距離検出モード
-        sampleDistance = new float[distanceMode.sampleSize()];
+    	        // タッチセンサ
+    	        touch = new EV3TouchSensor(SensorPort.S1);
+    	        touchMode = touch.getTouchMode();
+    	        sampleTouch = new float[touchMode.sampleSize()];
 
-        // カラーセンサ
-        colorSensor = new EV3ColorSensor(SensorPort.S3);
-        redMode = colorSensor.getRedMode();     // 輝度検出モード
-        sampleLight = new float[redMode.sampleSize()];
+    	        // 超音波センサ
+    	        sonar = new EV3UltrasonicSensor(SensorPort.S2);
+    	        distanceMode = sonar.getDistanceMode(); // 距離検出モード
+    	        sampleDistance = new float[distanceMode.sampleSize()];
 
-        // ジャイロセンサ
-        gyro = new EV3GyroSensor(SensorPort.S4);
-        rate = gyro.getRateMode();              // 角速度検出モード
-        sampleGyro = new float[rate.sampleSize()];
+    	        // カラーセンサ
+    	        colorSensor = new EV3ColorSensor(SensorPort.S3);
+    	        redMode = colorSensor.getRedMode();     // 輝度検出モード
+    	        sampleLight = new float[redMode.sampleSize()];
+
+    	        // ジャイロセンサ
+    	        gyro = new EV3GyroSensor(SensorPort.S4);
+    	        rate = gyro.getRateMode();              // 角速度検出モード
+    	        sampleGyro = new float[rate.sampleSize()];
+    	}
+
     }
 
     /**
@@ -83,7 +91,7 @@ final class EV3Body {
         touchMode.fetchSample(sampleTouch, 0);
         return ((int)sampleTouch[0] != 0);
     }
-	
+
     /**
      * 超音波センサにより障害物との距離を取得する。
      * @return 障害物との距離(m)。
@@ -101,7 +109,7 @@ final class EV3Body {
         redMode.fetchSample(sampleLight, 0);
         return sampleLight[0];
     }
-	
+
     /**
      * ジャイロセンサから角速度を取得する。
      * @return 角速度。

@@ -1,4 +1,4 @@
-package Driving;
+package Drive;
 
 public class ForwardCtrl {
 
@@ -6,7 +6,7 @@ public class ForwardCtrl {
 
 	float target;
 
-	ForwardController(){
+	ForwardCtrl(){
 		fo = new ForwardOperator();
 		target = 0.0F;
 	}
@@ -16,7 +16,7 @@ public class ForwardCtrl {
 	}
 
 	public void OperateForward(){
-		fo.setworking(target);
+		fo.setOperate(target);
 	}
 
 }

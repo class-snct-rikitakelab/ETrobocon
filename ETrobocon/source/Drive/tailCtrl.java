@@ -1,3 +1,4 @@
+package Drive;
 
 public class tailCtrl {
 
@@ -30,8 +31,8 @@ public class tailCtrl {
 	}
 
 	public void operateTail(float angle){
-		op.setOperater(angle);
-		op.motorCtrl();
+		op.setPWM(angle);
+		op.MotorCtrl();
 	}
 
 }
