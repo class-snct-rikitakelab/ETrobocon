@@ -1,5 +1,3 @@
-
-
 package Drive;
 
 public class TurnCtrl {
@@ -22,12 +20,14 @@ public class TurnCtrl {
 		float bright = brightness.getBrightness();
 		float turn = pCtrl.calcBrightnessCtrl(bright);
 		turnOperater.setOperate(turn);
-		//turnOperater.MotorCtrl();
+		
+		turnOperater.MotorCtrl();
 
 	}
 
 	public void MotorCtrl(float turn){
 		turnOperater.setOperate(turn);
+		turnOperater.MotorCtrl();
 	}
 
 }

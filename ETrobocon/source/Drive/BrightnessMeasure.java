@@ -1,5 +1,3 @@
-
-
 package Drive;
 
 public class BrightnessMeasure {
@@ -14,3 +12,4 @@ public class BrightnessMeasure {
 		return body.getBrightness();
 	}
 }
+

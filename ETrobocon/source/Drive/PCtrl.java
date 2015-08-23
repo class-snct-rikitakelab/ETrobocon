@@ -1,6 +1,5 @@
-//P制御
-
 package Drive;
+//P制御
 
 public class PCtrl {
 
@@ -10,11 +9,11 @@ public class PCtrl {
 
 	//操作量を算出
 	public float calcBrightnessCtrl(float bright) {
-		
+
 		float p = bright - THRESHOLD;
-    	
-    	p *= Pparam;
-		
+
+		p *= Pparam;
+
 		return  p;
 	}
 

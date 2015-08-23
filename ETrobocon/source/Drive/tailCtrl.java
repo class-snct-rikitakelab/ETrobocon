@@ -10,6 +10,11 @@ public class tailCtrl {
 
 	int TargetValue;
 
+	public tailCtrl(){
+		thaco = new tachoGetter();
+		op = new tailOperater();
+	}
+
 	public int getTargetValue(){
 		return TargetValue;
 	}
@@ -36,3 +41,4 @@ public class tailCtrl {
 	}
 
 }
+
