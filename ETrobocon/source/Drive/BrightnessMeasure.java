@@ -6,7 +6,7 @@ public class BrightnessMeasure {
 
 	private EV3Body body;
 
-	BrightnessMeasure(){
+	public BrightnessMeasure(){
 		body = new EV3Body();
 	}
 

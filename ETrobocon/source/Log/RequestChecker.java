@@ -1,6 +1,6 @@
 public class RequestChecker{
 	private static final int SOCKET_PORT = 7360;
-	private static final int REMOTE_COMMAND_LOG = 76; //"L"�L�[
+	private static final int REMOTE_COMMAND_LOG = 76; //"L"?L?[
 
 	private static ServerSocket    server = null;
 	private static Socket          client = null;

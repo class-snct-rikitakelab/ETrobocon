@@ -1,6 +1,8 @@
+package Log;
+
 public class Logger{
 
-	public void CreateLog (void){
+	public void CreateLog (){
 		LogSaver saver = new LogSaver();
 		LogCreater creater = new LogCreater();
 

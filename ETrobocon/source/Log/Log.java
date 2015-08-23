@@ -1,3 +1,4 @@
+package Log;
 public class Log {
 	private String timestamp;
 	private float turn;
@@ -7,25 +8,25 @@ public class Log {
 	public void setTimestamp(String timestamp){
 		this.timestamp = timestamp;
 	}
-	public String getTimestamp(void){
+	public String getTimestamp(){
 		return timestamp;
 	}
 	public void setTurn(float turn){
 		this.turn = turn;
 	}
-	public float getTurn(void){
+	public float getTurn(){
 		return turn;
 	}
 	public void setForward(float forward){
 		this.forward = forward;
 	}
-	public static float getForward(void){
+	public float getForward(){
 		return forward;
 	}
 	public void setBrightness(float brightness){
 		this.brightness = brightness;
 	}
-	public float getBrightness(void){
+	public float getBrightness(){
 		return brightness;
 	}
 }
