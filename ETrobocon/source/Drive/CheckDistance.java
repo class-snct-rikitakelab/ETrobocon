@@ -2,7 +2,7 @@ package Drive;
 
 public class CheckDistance {
 
-	tachoGetter tacho;
+	tachoGetter tacho = new tachoGetter();
 
 	private float distance;
 
