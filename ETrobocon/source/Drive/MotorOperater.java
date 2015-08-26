@@ -3,7 +3,6 @@ package Drive;
 import lejos.hardware.Battery;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.utility.Delay;
-import Drive.Balancer;
 
 public class MotorOperater{
 

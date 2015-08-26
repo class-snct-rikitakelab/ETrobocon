@@ -17,6 +17,7 @@ public class ForwardCtrl {
 
 	public void OperateForward(){
 		fo.setOperate(target);
+		fo.MotorCtrl();
 	}
 
 }
