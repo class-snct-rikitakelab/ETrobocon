@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 public class LogSaver{
 
+	//ファイルへのログ書き込み
 	public void saveLog(Log log) {
 		String str = "" + log.getTimestamp() + " "+ log.getTurn() + " "+ log.getForward() + " " + log.getBrightness();
 		try{
@@ -25,14 +26,18 @@ public class LogSaver{
 		}
 	}
 
+	//ファイルからログの読み出し
 	public ArrayList<Log> readLog(){
 		ArrayList<Log> array = new ArrayList<Log>();
 		 try{
 			File file = new File("log_file.txt");
+			file.deleteOnExit();
 			BufferedReader buffreader = new BufferedReader(new FileReader(file));
 			String str;
-			Log log = new Log();
+
 			while((str = buffreader.readLine()) != null){
+				Log log = new Log();
+				//読み出した文字列を切り分けて格納
 				String[] splitstr = str.split(" ", 0);
 				log.setTimestamp(splitstr[0]);
 				log.setTurn(Float.parseFloat(splitstr[1]));
