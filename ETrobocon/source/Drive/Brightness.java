@@ -6,7 +6,7 @@ public class Brightness {
 
 	private float targetVal;//目標値
 
-	private BrightnessMeasure brightnessMeasure;
+	private BrightnessMeasure brightnessMeasure = new BrightnessMeasure();
 
 
 	//目標値を設定する
