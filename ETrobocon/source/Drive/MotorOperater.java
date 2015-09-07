@@ -34,6 +34,11 @@ public class MotorOperater{
 		this.pwm = pwm;
 	}
 
+	public void StopMotors(){
+		body.motorPortL.controlMotor(0, 1);
+		body.motorPortR.controlMotor(0, 1);
+	}
+
 	public void Drive(){
 		float gyroNow = body.getGyroValue();
 		int thetaL = body.motorPortL.getTachoCount();
