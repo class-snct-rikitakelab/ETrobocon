@@ -26,6 +26,8 @@ public class TurnCtrl {
 	//モータを制御する
 	public void MotorCtrl() {
 		float bright = brightness.getBrightness();
+		float target = brightness.getTarget();
+		pCtrl.setThreshold(target);
 		//float turn = pCtrl.calcBrightnessCtrl(bright);
 		float turn = onoff.calcOnOffCtrl(bright);	//テスト用
 		turnOperater.setOperate(turn);

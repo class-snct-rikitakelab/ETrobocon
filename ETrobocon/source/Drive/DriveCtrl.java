@@ -25,9 +25,9 @@ public class DriveCtrl {
 
 	//スタートするときの動作を定義
 	public void startDrive(){
-		tc.MotorCtrl(0.0F);
+		tail.sitTail();
+		tc.MotorCtrl();
 		fc.driveStart();
-		tail.standTail();
 
 	}
 

@@ -5,7 +5,7 @@ public class ForwardCommander {
 	static float NORM_FOR = 30.0F;
 	static float STOP_FOR = -10.0F;
 	static float WAIT_FOR = 0.0F;
-	static float START_FOR = 10.0F;
+	static float START_FOR = 0.0F;
 
 	ForwardCtrl fc;
 
