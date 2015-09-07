@@ -33,4 +33,10 @@ public class ForwardCommander {
 		fc.OperateForward();
 	}
 
+	//全ての動作が終わって完全停止するときに使うメソッド
+	public void driveEnd(){
+		//左右のモータのPWM値を0にすることによってモータを完全停止させます．
+		fc.fo.wmctrl.StopMotors();
+	}
+
 }
