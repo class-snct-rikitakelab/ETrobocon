@@ -4,7 +4,7 @@ package Drive;
 
 public class Brightness {
 
-	private float targetVal;//目標値
+	private static float targetVal = 0.2f;//目標値
 
 	private BrightnessMeasure brightnessMeasure = new BrightnessMeasure();
 

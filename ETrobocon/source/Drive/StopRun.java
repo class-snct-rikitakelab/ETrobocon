@@ -6,7 +6,7 @@ import lejos.hardware.lcd.LCD;
 public class StopRun {
 
 	private static CheckDistance cDistance = new CheckDistance();
-	CheckGray cGray = new CheckGray();
+	private static CheckGray cGray = new CheckGray();
 	private static CheckCurve cCurve = new CheckCurve();
 
 	private static final float targetDistance = 2100;//停止目標距離 最後のカーブからゴールまでの距離が左右どちらとも1.25m これが1800に対応する 1800はゴール丁度なので少し多めに取る
