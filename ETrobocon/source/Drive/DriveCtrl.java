@@ -35,13 +35,14 @@ public class DriveCtrl {
 	public void stopDrive(){
 		tc.MotorCtrl(0.0F);
 		fc.driveStop();
-		tail.sitTail();
+		tail.stopTail();
 	}
 
 	//完全停止して待機しているときの動作を定義
 	public void Waiting(){
-		tail.standTail();
+		tail.stopTail();
 		tc.MotorCtrl(0.0F);
-		fc.driveWaiting();
+		//fc.driveWaiting();
+		fc.driveEnd();
 	}
 }

@@ -94,6 +94,7 @@ public class Starter{
 		LCD.drawString("TOUCH OK", 0, 0);
 
 		//以下turnのテスト用
+		dc.tail.startTail();
 		Timer timer = new Timer();
 		TimerTask stask = new TimerTask(){
 			public void run(){
@@ -102,7 +103,7 @@ public class Starter{
 			}
 		};
 		timer.scheduleAtFixedRate(stask, 0, 4);
-		for(int i = 0; i<3000;i++){
+		for(int i = 0; i<1000;i++){
 			LCD.drawInt(i, 2, 2);
 		}
 		stask.cancel();
@@ -126,6 +127,11 @@ public class Starter{
 				dc.stopDrive();
 			}
 		};
+		timer.scheduleAtFixedRate(stoptask, 0, 4);
+		for(int i =0;i<3000;i++){
+			LCD.drawInt(i, 2, 2);
+		}
+		stoptask.cancel();
 		for(;;){
 			dc.Waiting();
 			
