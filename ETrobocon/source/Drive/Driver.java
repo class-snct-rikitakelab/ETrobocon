@@ -1,7 +1,10 @@
 package Drive;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import lejos.hardware.lcd.LCD;
-import lejos.utility.Delay;
+
 
 public class Driver {
 
@@ -9,39 +12,62 @@ public class Driver {
 	StopRun stop = new StopRun();
 	EV3Body body = new EV3Body();
 	BrightnessMeasure bMeasure = new BrightnessMeasure();
+	calibration calib = new calibration();
+	
+	public void run(){
+		//dCtrl.init();
+		dCtrl.tail.startTail();
+		Timer timer = new Timer();
+		TimerTask startTask = new TimerTask(){
+			public void run(){
+				dCtrl.startDrive();
+			}
+		};
+		timer.scheduleAtFixedRate(startTask, 0, 4);
 
+		for(int i=0;i<3000;i++){
+			LCD.drawInt(i, 2, 2);
+		}
+		startTask.cancel();
+		
+		TimerTask drivetask = new TimerTask() {
+			public void run(){
+				dCtrl.Drive();
+			}
+		};
+		StopRun stopR = new StopRun();
+		timer.scheduleAtFixedRate(drivetask, 0, 4);
+		while(!stopR.judgeGoal()){
+			LCD.drawString("not GOALl", 4, 4);
+		}
+		LCD.clear();
+		drivetask.cancel();
+		TimerTask stoptask = new TimerTask(){
+			public void run(){
+				dCtrl.stopDrive();
+			}
+		};
+		timer.scheduleAtFixedRate(stoptask, 0, 4);
+		for(int i =0;i<1000;i++){
+			LCD.drawInt(i, 2, 2);
+		}
+		stoptask.cancel();
+		for(;;){
+			dCtrl.Waiting();
+			
+		}
+
+	}
+
+
+	public void log(){
+
+	}
 
 	public void Calibration(){
 
-		Brightness bright = dCtrl.tc.brightness;
-		CheckGray cGray = stop.cGray;
+		calib.Calibration();
 
-		Delay.msDelay(200);
-
-		LCD.clear();
-		LCD.drawString("SET White COLOR", 2, 2);
-		float wColor = getColor();
-		LCD.drawString("SET Black COLOR", 2, 2);
-		float bColor = getColor();
-		LCD.drawString("SET Gray COLOR ", 2, 2);
-		float gColor = getColor();
-
-		bright.setTarget((wColor + bColor) / 2);
-		cGray.setTargetWhite((wColor + gColor) / 2);
-		cGray.setTargetBlack((gColor + bColor) / 2);
-
-	}
-
-	private float getColor(){
-	Delay.msDelay(300);
-	for(;;){
-		if(body.touchSensorIsPressed())break;
-		Delay.msDelay(20);
-	}
-	Delay.msDelay(200);
-	float color = bMeasure.getBrightness();
-
-	return color;
 	}
 
 }

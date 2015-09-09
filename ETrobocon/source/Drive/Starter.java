@@ -71,9 +71,7 @@ public class Starter{
 		for(;;){
 
 		}
-		//Driver driver = new Driver();
-		//driver.calibration();
-		//driver.run();
+		
 	}
 
 	public void TouchStart(){
@@ -82,6 +80,9 @@ public class Starter{
 		final TurnCtrl tcon = new TurnCtrl();//テスト用
 		final DriveCtrl dc = new DriveCtrl();
 		//final tailCommander tail = new tailCommander();//final修飾子はテスト用
+		Driver driver = new Driver();
+		//driver.Calibration();
+		//driver.dCtrl.init();
 		dc.init();
 		LCD.drawString("Touch Strat",0,2);
 		for(;;){
@@ -93,7 +94,11 @@ public class Starter{
 		LCD.clear();
 		LCD.drawString("TOUCH OK", 0, 0);
 
+		while(true){
+			driver.run();
+		}
 		//以下turnのテスト用
+		/*
 		dc.tail.startTail();
 		Timer timer = new Timer();
 		TimerTask stask = new TimerTask(){
@@ -114,6 +119,7 @@ public class Starter{
 				//fcom.driveNormal();
 				//tcon.MotorCtrl(80.0F);
 				dc.Drive();
+				//Delay.msDelay(2);
 
 			}
 		};
@@ -128,7 +134,7 @@ public class Starter{
 			}
 		};
 		timer.scheduleAtFixedRate(stoptask, 0, 4);
-		for(int i =0;i<3000;i++){
+		for(int i =0;i<1000;i++){
 			LCD.drawInt(i, 2, 2);
 		}
 		stoptask.cancel();
@@ -138,6 +144,8 @@ public class Starter{
 		}
 		//Driver driver = new Driver();
 		//driver.calibration();
-		//driver.run();
+		//driver.run();]
+		 * 
+		 */
 	}
 }
