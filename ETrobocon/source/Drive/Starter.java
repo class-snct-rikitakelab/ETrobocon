@@ -21,13 +21,32 @@ public class Starter{
 	private static DataInputStream dataInputStream = null;
 	private static int             remoteCommand = 0;
 
+	private static EV3Body body;
+	private static Driver driver;
+	private static DriveCtrl dc;
+	public Starter(){
+		body = new EV3Body();
+		driver = new Driver();
+		dc = new DriveCtrl();
+	}
+	
 	public void RemoteStart(){
-		EV3Body body = new EV3Body();
-		final tailCommander tail = new tailCommander();
-		final ForwardCommander fcom = new ForwardCommander();
-		fcom.fc.fo.wmctrl.init();
+		//final tailCommander tail = new tailCommander();
+		//final ForwardCommander fcom = new ForwardCommander();
+		
+
+		dc.init();
+		driver.Calibration();
 		LCD.drawString("PLEASE CONNECT", 0, 0);
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask(){
+			public void run(){
+				dc.tail.standTail();
+			}
+		};
+		timer.scheduleAtFixedRate(task, 0, 4);
 		for(;;){
+			dc.tail.standTail();
 			if(server == null){
 				try {
 					server = new ServerSocket(SOCKET_PORT);
@@ -39,7 +58,6 @@ public class Starter{
 					dataInputStream = null;
 				}
 			} else {
-				tail.standTail();
 				LCD.clear();
 				LCD.drawString("REMOTE START",0,0);
 				LCD.drawString("PRESS START KEY", 2, 2);
@@ -55,10 +73,19 @@ public class Starter{
 				}
 			}
 		}
+
+		
+		//driver.log();
+
+				
 		LCD.clear();
 		LCD.drawString("REMOTE OK", 0, 0);
 
+		task.cancel();
+		
+		driver.run();
 		//以下テスト用
+		/*
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask(){
 			@Override
@@ -71,20 +98,24 @@ public class Starter{
 		for(;;){
 
 		}
+		*/
 		
 	}
 
 	public void TouchStart(){
-		EV3Body body = new EV3Body();
-		final ForwardCommander fcom = new ForwardCommander();//テスト用
-		final TurnCtrl tcon = new TurnCtrl();//テスト用
-		final DriveCtrl dc = new DriveCtrl();
+		//final ForwardCommander fcom = new ForwardCommander();//テスト用
+		//final TurnCtrl tcon = new TurnCtrl();//テスト用
+		//final DriveCtrl dc = new DriveCtrl();
 		//final tailCommander tail = new tailCommander();//final修飾子はテスト用
-		Driver driver = new Driver();
-		//driver.Calibration();
-		//driver.dCtrl.init();
+		//Driver driver = new Driver();
+		
 		dc.init();
+		driver.Calibration();
+		//driver.dCtrl.init();
+		
 		LCD.drawString("Touch Strat",0,2);
+		//driver.log();
+
 		for(;;){
 			dc.tail.standTail();
 			if(body.touchSensorIsPressed()){
@@ -94,9 +125,8 @@ public class Starter{
 		LCD.clear();
 		LCD.drawString("TOUCH OK", 0, 0);
 
-		while(true){
-			driver.run();
-		}
+		driver.run();
+		
 		//以下turnのテスト用
 		/*
 		dc.tail.startTail();
